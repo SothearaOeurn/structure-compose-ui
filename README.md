@@ -67,5 +67,5 @@ The primary activity that initializes the app and manages navigation.
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/project.git
+git clone https://github.com/SothearaOeurn/structure-compose-ui.git
 cd project
