@@ -1,10 +1,18 @@
-package com.kh.sbilyhour.composestructure.utils
+package com.kh.sbilyhour.composestructure.data.error
+
+import android.content.Context
 import com.google.gson.Gson
+import com.kh.sbilyhour.composestructure.R
+import com.kh.sbilyhour.composestructure.core.utils.NetworkUtils
 import com.kh.sbilyhour.composestructure.domain.model.BaseResponse
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class ApiErrorHandler @Inject constructor(private val gson: Gson, private val networkUtils: NetworkUtils) {
+class ApiErrorHandler @Inject constructor(
+    private val context: Context,
+    private val gson: Gson,
+    private val networkUtils: NetworkUtils
+) {
     suspend fun <T> handleApiCall(
         apiCall: suspend () -> T
     ): BaseResponse<T> {
@@ -12,7 +20,7 @@ class ApiErrorHandler @Inject constructor(private val gson: Gson, private val ne
             if (!networkUtils.isConnected()) {
                 return BaseResponse(
                     statusCode = 503,
-                    message = "No internet connection.",
+                    message = context.getString(R.string.no_internet_connection),
                     data = null
                 )
             }
@@ -33,7 +41,7 @@ class ApiErrorHandler @Inject constructor(private val gson: Gson, private val ne
         } catch (e: Exception) {
             BaseResponse(
                 statusCode = 500,
-                message = "Unexpected error occurred: ${e.message}",
+                message = context.getString(R.string.unexpected_error_occurred, e.message),
                 data = null
             )
         }
@@ -47,10 +55,10 @@ class ApiErrorHandler @Inject constructor(private val gson: Gson, private val ne
 
                 errorResponse.message
             } else {
-                "Unknown error occurred."
+                context.getString(R.string.unexpected_error_occurred)
             }
         } catch (e: Exception) {
-            "Error parsing error message: ${e.message}"
+            context.getString(R.string.error_parsing_error_message, e.message)
         }
     }
 }

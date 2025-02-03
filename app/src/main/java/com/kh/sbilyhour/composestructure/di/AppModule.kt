@@ -5,7 +5,7 @@ import dagger.Module
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kh.sbilyhour.composestructure.BuildConfig
-import com.kh.sbilyhour.composestructure.utils.NetworkUtils
+import com.kh.sbilyhour.composestructure.core.utils.NetworkUtils
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext

@@ -1,4 +1,4 @@
-package com.kh.sbilyhour.composestructure.data.remote.model.response
+package com.kh.sbilyhour.composestructure.data.model.response
 
 data class LoginResponseDto(
     var accessToken: String? = null,

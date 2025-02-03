@@ -66,10 +66,11 @@ android {
     kapt {
         correctErrorTypes = true
     }
-
+    
     protobuf {
         protoc {
-            artifact = libs.protoc.get().module.toString() // Ensure this is a valid string
+            // artifact = libs.protoc.get().module.toString()
+            artifact = "com.google.protobuf:protoc:3.23.4"
         }
         generateProtoTasks {
             all().forEach { task ->
@@ -81,6 +82,7 @@ android {
                 }
             }
         }
+
     }
 
     sourceSets {
@@ -96,6 +98,7 @@ android {
 
 dependencies {
     implementation(libs.datastore)
+    implementation(libs.datastore.core)
     implementation(libs.protobuf.javalite)
     implementation(libs.protobuf.plugin)
     implementation(libs.hilt.android)

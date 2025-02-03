@@ -57,7 +57,7 @@ fun InfoAlertDialog(
         },
 
         properties = DialogProperties(
-            dismissOnClickOutside = false
+            dismissOnClickOutside = true
         )
     )
 }
