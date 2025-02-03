@@ -1,6 +1,5 @@
 package com.kh.sbilyhour.composestructure.presentation.ui.screen.register
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,8 +36,8 @@ import com.kh.sbilyhour.composestructure.presentation.ui.components.LoadingOverl
 import com.kh.sbilyhour.composestructure.presentation.ui.components.PasswordComponent
 import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldComponent
 import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldStyle
-import com.kh.sbilyhour.composestructure.presentation.ui.dialogs.InfoAlertDialog
 import com.kh.sbilyhour.composestructure.presentation.ui.theme.ComposeStructureTheme
+import com.kh.sbilyhour.composestructure.presentation.ui.widgets.dialogs.InformAlertDialog
 
 @Composable
 fun RegisterScreen(
@@ -145,7 +144,7 @@ fun RegisterScreen(
         val errorMessage =
             (state as? RegisterState.Error)?.message
                 ?: stringResource(R.string.unknown_error_occurred)
-        InfoAlertDialog(
+        InformAlertDialog(
             onDismissRequest = {
                 openErrorDialog = false
                 viewModel.resetErrorState()
@@ -161,7 +160,7 @@ fun RegisterScreen(
     }
 
     if (openSuccessDialog) {
-        InfoAlertDialog(
+        InformAlertDialog(
             onDismissRequest = {
                 openSuccessDialog = false
                 viewModel.resetErrorState()

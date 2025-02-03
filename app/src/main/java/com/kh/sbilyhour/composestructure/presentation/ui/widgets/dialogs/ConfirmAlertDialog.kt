@@ -1,4 +1,4 @@
-package com.kh.sbilyhour.composestructure.presentation.ui.dialogs
+package com.kh.sbilyhour.composestructure.presentation.ui.widgets.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
@@ -13,7 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
-fun InfoAlertDialog(
+fun ConfirmAlertDialog(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
     dialogTitle: String,
@@ -52,12 +52,20 @@ fun InfoAlertDialog(
                     onConfirmation()
                 }
             ) {
-                Text("OK")
+                Text("Confirm")
             }
         },
-
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Cancel")
+            }
+        },
         properties = DialogProperties(
-            dismissOnClickOutside = true
+            dismissOnClickOutside = false
         )
     )
 }

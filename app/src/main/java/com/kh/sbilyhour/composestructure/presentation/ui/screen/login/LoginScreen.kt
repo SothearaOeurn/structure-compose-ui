@@ -1,6 +1,5 @@
 package com.kh.sbilyhour.composestructure.presentation.ui.screen.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +14,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,8 +36,8 @@ import com.kh.sbilyhour.composestructure.presentation.ui.components.LoadingOverl
 import com.kh.sbilyhour.composestructure.presentation.ui.components.PasswordComponent
 import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldComponent
 import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldStyle
-import com.kh.sbilyhour.composestructure.presentation.ui.dialogs.InfoAlertDialog
 import com.kh.sbilyhour.composestructure.presentation.ui.theme.ComposeStructureTheme
+import com.kh.sbilyhour.composestructure.presentation.ui.widgets.dialogs.InformAlertDialog
 
 @Composable
 fun LoginScreen(
@@ -106,13 +106,13 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 ButtonComponent(
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Login",
                     onClick = { viewModel.login(username, password) },
-                    modifier = modifier.fillMaxWidth(),
                     style = ButtonStyle(
-                        backgroundColor = Color.LightGray,
-                        contentColor = Color.Yellow,
-                        textColor = Color.Black,
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
                         cornerRadius = 16.dp,
                         height = 56.dp
                     )
@@ -126,7 +126,7 @@ fun LoginScreen(
             if (openErrorDialog) {
                 val errorMessage =
                     (state as? LoginState.Error)?.message ?: "Unknown error occurred"
-                InfoAlertDialog(
+                InformAlertDialog(
                     onDismissRequest = {
                         openErrorDialog = false
                         viewModel.resetErrorState()
