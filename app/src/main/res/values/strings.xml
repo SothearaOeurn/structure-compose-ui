@@ -3,4 +3,15 @@
     <string name="error_username_empty">Username cannot be empty</string>
     <string name="error_password_empty">Password cannot be empty</string>
     <string name="error_password_length">Password must be at least 6 characters</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="unexpected_error_occurred">Unexpected error occurred: %1$s</string>
+    <string name="error_parsing_error_message">Error parsing error message: %1$s</string>
+    <string name="email_cannot_be_empty">Email cannot be empty</string>
+    <string name="register_successful">Register Successful</string>
+    <string name="after_click_okay_button_you_will_be_redirected_to_home_screen_please_go_to_login">After click Okay button, you will be redirected to Home Screen,\n Please go to login</string>
+    <string name="unknown_error_occurred">Unknown error occurred</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="register">Register</string>
 </resources>

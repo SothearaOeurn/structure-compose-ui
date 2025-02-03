@@ -3,13 +3,24 @@ package com.kh.sbilyhour.composestructure.di
 import android.content.Context
 import com.google.gson.Gson
 import com.kh.sbilyhour.composestructure.data.mapper.LoginMapper
-import com.kh.sbilyhour.composestructure.data.remote.api.LoginApi
+import com.kh.sbilyhour.composestructure.data.api.AuthApi
 import com.kh.sbilyhour.composestructure.data.repository.LoginRepositoryImpl
 import com.kh.sbilyhour.composestructure.domain.repository.LoginRepository
 import com.kh.sbilyhour.composestructure.domain.usecase.login.LoginUseCase
 import com.kh.sbilyhour.composestructure.domain.usecase.login.LoginValidation
-import com.kh.sbilyhour.composestructure.utils.ApiErrorHandler
-import com.kh.sbilyhour.composestructure.utils.NetworkUtils
+import com.kh.sbilyhour.composestructure.data.error.ApiErrorHandler
+import com.kh.sbilyhour.composestructure.core.utils.NetworkUtils
+import com.kh.sbilyhour.composestructure.data.datasource.local.datastore.UserPreferencesDataSource
+import com.kh.sbilyhour.composestructure.data.datasource.local.datastore.UserPreferencesDataSourceImpl
+import com.kh.sbilyhour.composestructure.data.datasource.remote.login.LoginRemoteDataSource
+import com.kh.sbilyhour.composestructure.data.datasource.remote.login.LoginRemoteDataSourceImpl
+import com.kh.sbilyhour.composestructure.data.datasource.remote.register.RegisterRemoteDataSource
+import com.kh.sbilyhour.composestructure.data.datasource.remote.register.RegisterRemoteDataSourceImpl
+import com.kh.sbilyhour.composestructure.data.mapper.RegisterMapper
+import com.kh.sbilyhour.composestructure.data.repository.RegisterRepositoryImpl
+import com.kh.sbilyhour.composestructure.domain.repository.RegisterRepository
+import com.kh.sbilyhour.composestructure.domain.usecase.register.RegisterUseCase
+import com.kh.sbilyhour.composestructure.domain.usecase.register.RegisterValidation
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,16 +34,17 @@ import javax.inject.Singleton
 object AuthModule {
     @Provides
     @Singleton
-    fun provideLoginApi(retrofit: Retrofit): LoginApi = retrofit.create(LoginApi::class.java)
+    fun provideLoginApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
 
     @Provides
     @Singleton
     fun provideLoginRepository(
-        api: LoginApi,
         mapper: LoginMapper,
-        apiErrorHandler: ApiErrorHandler
+        apiErrorHandler: ApiErrorHandler,
+        remoteDataSource: LoginRemoteDataSource,
+        userPreferences: UserPreferencesDataSource
     ): LoginRepository =
-        LoginRepositoryImpl(api, mapper, apiErrorHandler)
+        LoginRepositoryImpl(mapper, apiErrorHandler, remoteDataSource, userPreferences)
 
     @Provides
     @Singleton
@@ -43,8 +55,12 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideApiErrorHandler(gson: Gson, networkUtils: NetworkUtils): ApiErrorHandler =
-        ApiErrorHandler(gson, networkUtils)
+    fun provideApiErrorHandler(
+        @ApplicationContext context: Context,
+        gson: Gson,
+        networkUtils: NetworkUtils
+    ): ApiErrorHandler =
+        ApiErrorHandler(context, gson, networkUtils)
 
     @Provides
     @Singleton
@@ -56,4 +72,50 @@ object AuthModule {
     @Singleton
     fun provideLoginValidation(@ApplicationContext context: Context): LoginValidation =
         LoginValidation(context)
+
+    @Provides
+    @Singleton
+    fun provideLoginRemoteDataSource(api: AuthApi): LoginRemoteDataSource {
+        return LoginRemoteDataSourceImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserPreferenceDataSource(@ApplicationContext context: Context): UserPreferencesDataSource {
+        return UserPreferencesDataSourceImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRegisterValidation(@ApplicationContext context: Context): RegisterValidation =
+        RegisterValidation(context)
+
+    @Provides
+    @Singleton
+    fun provideRegisterRemoteDataSource(api: AuthApi): RegisterRemoteDataSource {
+        return RegisterRemoteDataSourceImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRegisterMapper(): RegisterMapper {
+        return RegisterMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRegisterUseCase(
+        repository: RegisterRepository,
+        loginValidation: RegisterValidation
+    ): RegisterUseCase = RegisterUseCase(repository, loginValidation)
+
+    @Provides
+    @Singleton
+    fun provideRegisterRepository(
+        mapper: RegisterMapper,
+        apiErrorHandler: ApiErrorHandler,
+        remoteDataSource: RegisterRemoteDataSource,
+        userPreferences: UserPreferencesDataSource
+    ): RegisterRepository =
+        RegisterRepositoryImpl(mapper, apiErrorHandler, remoteDataSource, userPreferences)
 }

@@ -1,4 +1,4 @@
-package com.kh.sbilyhour.composestructure.utils
+package com.kh.sbilyhour.composestructure.core.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

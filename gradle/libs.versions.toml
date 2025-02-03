@@ -24,7 +24,7 @@ protoc = "21.7"
 protobuf_plugin = "0.9.4"
 
 [libraries]
-
+datastore_core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protoc" }

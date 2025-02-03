@@ -8,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 
 import com.kh.sbilyhour.composestructure.presentation.ui.navigation.AppNavHost
 import com.kh.sbilyhour.composestructure.presentation.ui.theme.ComposeStructureTheme
-import com.kh.sbilyhour.composestructure.utils.NetworkSpeedMonitor
+import com.kh.sbilyhour.composestructure.core.utils.NetworkSpeedMonitor
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity(), NetworkSpeedMonitor.SpeedMonitorListen
     private lateinit var networkMonitor: NetworkSpeedMonitor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         networkMonitor = NetworkSpeedMonitor(this)
         networkMonitor.setSpeedMonitorListener(this)
         networkMonitor.startMonitoring()

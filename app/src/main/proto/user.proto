@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message UserProto{
+  string access_token = 1;
+  double expires_in = 2;
+  double refresh_expires_in = 3;
+  string refresh_token = 4;
+  string token_type = 5;
+  string not_before_policy = 6;
+  string session_state = 7;
+  string scope = 8;
+}

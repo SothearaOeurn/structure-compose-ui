@@ -16,16 +16,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
+data class TextFieldStyle(
+    val label: String = "Text Field",
+    val errorMessage: String = "",
+    val isPassword: Boolean = false,
+    val fontFamily: FontFamily = FontFamily.Default
+)
+
 @Composable
 fun TextFieldComponent(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String = "Text Field",
-    errorMessage: String = "",
+    style: TextFieldStyle = TextFieldStyle(), // Grouped parameters
     icon: @Composable (() -> Unit)? = null,
-    isPassword: Boolean = false,
-    modifier: Modifier = Modifier,
-    fontFamily: FontFamily = FontFamily.Default // Default font family
+    modifier: Modifier = Modifier
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -33,11 +37,11 @@ fun TextFieldComponent(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label, fontFamily = fontFamily) }, // Apply font family to label
-        isError = errorMessage.isNotEmpty(),
-        visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+        label = { Text(style.label, fontFamily = style.fontFamily) }, // Apply font family to label
+        isError = style.errorMessage.isNotEmpty(),
+        visualTransformation = if (style.isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
         trailingIcon = {
-            if (isPassword) {
+            if (style.isPassword) {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
                         imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
@@ -48,16 +52,17 @@ fun TextFieldComponent(
         },
         leadingIcon = icon, // Add custom leading icon if provided
         modifier = modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text)
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = if (style.isPassword) KeyboardType.Password else KeyboardType.Text)
     )
 
     // Error message
-    if (errorMessage.isNotEmpty()) {
+    if (style.errorMessage.isNotEmpty()) {
         Text(
-            text = errorMessage,
+            text = style.errorMessage,
             color = Color.Red,
-            style = MaterialTheme.typography.bodySmall.copy(fontFamily = fontFamily), // Apply font family to error message
+            style = MaterialTheme.typography.bodySmall.copy(fontFamily = style.fontFamily), // Apply font family to error message
             modifier = Modifier.padding(start = 16.dp, top = 4.dp)
         )
     }
 }
+
