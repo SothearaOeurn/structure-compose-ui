@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -66,7 +65,7 @@ android {
     kapt {
         correctErrorTypes = true
     }
-    
+
     protobuf {
         protoc {
             // artifact = libs.protoc.get().module.toString()
@@ -97,6 +96,8 @@ android {
 
 
 dependencies {
+    implementation(libs.appcompat)
+    implementation(libs.activity.ktx)
     implementation(libs.accompanist.navigation.animation)
     implementation(libs.datastore)
     implementation(libs.datastore.core)
