@@ -1,26 +1,10 @@
-package com.kh.sbilyhour.composestructure.presentation.ui.screen.register
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+package com.kh.sbilyhour.composestructure.presentation.ui.screen.register
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -30,15 +14,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kh.sbilyhour.composestructure.R
-import com.kh.sbilyhour.composestructure.presentation.ui.components.ButtonComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.ButtonStyle
-import com.kh.sbilyhour.composestructure.presentation.ui.components.LoadingOverlay
-import com.kh.sbilyhour.composestructure.presentation.ui.components.PasswordComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldStyle
+import com.kh.sbilyhour.composestructure.presentation.ui.components.*
 import com.kh.sbilyhour.composestructure.presentation.ui.theme.ComposeStructureTheme
 import com.kh.sbilyhour.composestructure.presentation.ui.widgets.dialogs.InformAlertDialog
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     navController: NavController,
@@ -49,8 +29,8 @@ fun RegisterScreen(
     val password by viewModel.password.collectAsState()
     val email by viewModel.email.collectAsState()
 
-    var openErrorDialog = state is RegisterState.Error
-    var openSuccessDialog = state is RegisterState.Success
+    var openErrorDialog by remember { mutableStateOf(state is RegisterState.Error) }
+    var openSuccessDialog by remember { mutableStateOf(state is RegisterState.Success) }
 
     LaunchedEffect(state) {
         when (state) {
@@ -63,14 +43,10 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                backgroundColor = MaterialTheme.colorScheme.surface,
-                title = { Text("Register Screen") },
+                title = { Text(stringResource(R.string.register)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = ""
-                        )
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
                     }
                 }
             )
@@ -89,24 +65,24 @@ fun RegisterScreen(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TextFieldComponent(
                     value = username,
                     onValueChange = { viewModel.setUsername(it) },
                     style = TextFieldStyle(
-                        label = stringResource(R.string.username), errorMessage = usernameError,
+                        label = stringResource(R.string.username),
+                        errorMessage = usernameError,
                         fontFamily = FontFamily.Serif
                     ),
-
-                    )
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 TextFieldComponent(
                     value = email,
                     onValueChange = { viewModel.setEmail(it) },
                     style = TextFieldStyle(
-                        label = stringResource(R.string.email), errorMessage = emailError,
+                        label = stringResource(R.string.email),
+                        errorMessage = emailError,
                         fontFamily = FontFamily.Serif
                     ),
                 )
@@ -131,19 +107,15 @@ fun RegisterScreen(
                         cornerRadius = 16.dp,
                         height = 56.dp
                     )
-
                 )
             }
-            // Loading Overlay
             LoadingOverlay(isVisible = state is RegisterState.Loading)
         }
     }
 
-    // Alert Dialog
     if (openErrorDialog) {
-        val errorMessage =
-            (state as? RegisterState.Error)?.message
-                ?: stringResource(R.string.unknown_error_occurred)
+        val errorMessage = (state as? RegisterState.Error)?.message
+            ?: stringResource(R.string.unknown_error_occurred)
         InformAlertDialog(
             onDismissRequest = {
                 openErrorDialog = false
@@ -153,7 +125,7 @@ fun RegisterScreen(
                 openErrorDialog = false
                 viewModel.resetErrorState()
             },
-            dialogTitle = "Login Error",
+            dialogTitle = stringResource(R.string.register_error),
             dialogText = errorMessage,
             icon = null,
         )
@@ -168,7 +140,7 @@ fun RegisterScreen(
             onConfirmation = {
                 openSuccessDialog = false
                 viewModel.resetErrorState()
-                navController.popBackStack(route = "home", inclusive = false)
+                navController.popBackStack()
             },
             dialogTitle = stringResource(R.string.register_successful),
             dialogText = stringResource(R.string.after_click_okay_button_you_will_be_redirected_to_home_screen_please_go_to_login),
@@ -177,10 +149,9 @@ fun RegisterScreen(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun RegisterScreenPreview() {
     ComposeStructureTheme {
         RegisterScreen(navController = rememberNavController())
     }

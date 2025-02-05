@@ -1,41 +1,27 @@
 package com.kh.sbilyhour.composestructure.presentation.ui.screen.login
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kh.sbilyhour.composestructure.R
-import com.kh.sbilyhour.composestructure.presentation.ui.components.ButtonComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.ButtonStyle
-import com.kh.sbilyhour.composestructure.presentation.ui.components.LoadingOverlay
-import com.kh.sbilyhour.composestructure.presentation.ui.components.PasswordComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.TextFieldStyle
+import com.kh.sbilyhour.composestructure.presentation.ui.components.*
+import com.kh.sbilyhour.composestructure.presentation.ui.navigation.AppScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.theme.ComposeStructureTheme
 import com.kh.sbilyhour.composestructure.presentation.ui.widgets.dialogs.InformAlertDialog
 
@@ -45,51 +31,56 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-
     val state by viewModel.state.collectAsState()
     val username by viewModel.username.collectAsState()
     val password by viewModel.password.collectAsState()
-    var openErrorDialog = state is LoginState.Error
+    var openErrorDialog by remember { mutableStateOf(state is LoginState.Error) }
 
     LaunchedEffect(state) {
         when (state) {
             is LoginState.Error -> openErrorDialog = true
-            is LoginState.Success -> navController.navigate("home")
+            is LoginState.Success -> navController.navigate(AppScreen.Dashboard.route)
             else -> Unit
         }
     }
 
-    // Scaffold with TopAppBar for the Back Button
     Scaffold(
-        topBar = {
-            TopAppBar(
-                backgroundColor = Color.White,
-                title = { Text("Login Screen") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
+        topBar = {},
+        modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-
-        Box(modifier = modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(16.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
+                verticalArrangement = Arrangement.Center,
+
+                ) {
                 val usernameError = (state as? LoginState.UserNameEmpty)?.message.orEmpty()
                 val passwordError = (state as? LoginState.PasswordEmpty)?.message.orEmpty()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.stock),
+                        contentDescription = "App Logo",
+                        modifier = Modifier
+                            .height(150.dp)
+                            .width(150.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
 
                 TextFieldComponent(
                     value = username,
                     onValueChange = { viewModel.setUserName(it) },
                     style = TextFieldStyle(
-                        label = stringResource(R.string.username), errorMessage = usernameError,
+                        label = stringResource(R.string.username),
+                        errorMessage = usernameError,
                         fontFamily = FontFamily.Serif
                     ),
                 )
@@ -117,15 +108,32 @@ fun LoginScreen(
                         height = 56.dp
                     )
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextComponent(
+                    text = "Don't have an account? Click here to register",
+                    textColor = MaterialTheme.colorScheme.primary,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontFamily = FontFamily.Serif
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { navController.navigate(AppScreen.Register.route) }
+                        .padding(8.dp)
+                )
             }
 
             // Loading Overlay
             LoadingOverlay(isVisible = state is LoginState.Loading)
 
-            // Alert Dialog
+            // Error Dialog
             if (openErrorDialog) {
-                val errorMessage =
-                    (state as? LoginState.Error)?.message ?: "Unknown error occurred"
+                val errorMessage = (state as? LoginState.Error)?.message ?: "Unknown error occurred"
                 InformAlertDialog(
                     onDismissRequest = {
                         openErrorDialog = false
@@ -143,7 +151,6 @@ fun LoginScreen(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

@@ -1,19 +1,27 @@
 package com.kh.sbilyhour.composestructure
 
+import AppNavHost
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalAnimationApi
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 
-import com.kh.sbilyhour.composestructure.presentation.ui.navigation.AppNavHost
 import com.kh.sbilyhour.composestructure.presentation.ui.theme.ComposeStructureTheme
 import com.kh.sbilyhour.composestructure.core.utils.NetworkSpeedMonitor
+import com.kh.sbilyhour.composestructure.data.datasource.local.datastore.UserPreferencesDataSource
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), NetworkSpeedMonitor.SpeedMonitorListener {
     private lateinit var networkMonitor: NetworkSpeedMonitor
+    @Inject
+    lateinit var userPreferencesDataSource: UserPreferencesDataSource
+
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
@@ -22,7 +30,8 @@ class MainActivity : ComponentActivity(), NetworkSpeedMonitor.SpeedMonitorListen
         networkMonitor.startMonitoring()
         setContent {
             ComposeStructureTheme {
-                AppNavHost()
+                val navController = rememberAnimatedNavController()
+                AppNavHost(navController = navController, userPreferencesDataSource = userPreferencesDataSource)
             }
         }
     }

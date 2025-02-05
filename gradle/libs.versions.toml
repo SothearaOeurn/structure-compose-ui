@@ -22,8 +22,13 @@ datastore = "1.1.2"
 protobuf = "3.21.11"
 protoc = "21.7"
 protobuf_plugin = "0.9.4"
+coil = "2.2.2"
+accompanist = "0.31.3-beta"
 
 [libraries]
+
+accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 datastore_core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
@@ -72,4 +77,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
+
+
 

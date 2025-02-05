@@ -97,12 +97,14 @@ android {
 
 
 dependencies {
+    implementation(libs.accompanist.navigation.animation)
     implementation(libs.datastore)
     implementation(libs.datastore.core)
     implementation(libs.protobuf.javalite)
     implementation(libs.protobuf.plugin)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.coil.compose)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)
     implementation(libs.compose.ui)
