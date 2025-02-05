@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.map
 class UserPreferencesDataSourceImpl @Inject constructor(@ApplicationContext context: Context) :
     UserPreferencesDataSource {
 
+
+
     private val dataStore: DataStore<User.UserProto> = context.dataStore
 
     val userPreferencesFlow: Flow<User.UserProto> = dataStore.data
@@ -25,6 +27,9 @@ class UserPreferencesDataSourceImpl @Inject constructor(@ApplicationContext cont
                 throw exception
             }
         }
+    override val isUserLoggedInFlow: Flow<Boolean> = userPreferencesFlow.map { preferences ->
+        !preferences.accessToken.isNullOrEmpty()
+    }
 
     // Save user data to DataStore
     override suspend fun saveUser(response: LoginResponse?) {

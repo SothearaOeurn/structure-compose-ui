@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kh.sbilyhour.composestructure.data.datasource.local.datastore.UserPreferencesDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,27 +17,46 @@ class HomeViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _loginState = MutableStateFlow<HomeState>(HomeState.Idle)
-    val loginState: StateFlow<HomeState> = _loginState.asStateFlow()
+    // 🔄 Slider Images State
+    private val _sliderImages = MutableStateFlow(
+        listOf(
+            "https://www.svcover.nl/images/ogimage.jpg",
+            "https://www.svcover.nl/images/ogimage.jpg",
+            "https://www.svcover.nl/images/ogimage.jpg"
+        )
+    )
+    val sliderImages: StateFlow<List<String>> = _sliderImages.asStateFlow()
 
-    private val _username = MutableStateFlow("")
-    val username: StateFlow<String> = _username
+    // 📌 List Items State
+    private val _itemsList = MutableStateFlow(
+        listOf(
+            "Item 1",
+            "Item 2",
+            "Item 3",
+            "Item 4",
+            "Item 5",
+            "Item 6",
+            "Item 7",
+            "Item 8",
+            "Item 9"
+        )
+    )
+    val itemsList: StateFlow<List<String>> = _itemsList.asStateFlow()
+
+    // 🚀 Auto-Sliding Effect for Carousel
+    private val _currentPage = MutableStateFlow(0)
+    val currentPage: StateFlow<Int> = _currentPage.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            val user = userPreferencesDataSource.getUser()
-            _username.emit(user.accessToken)
-        }
+        autoSlideImages()
     }
 
-    fun logout() {
+    private fun autoSlideImages() {
         viewModelScope.launch {
-            userPreferencesDataSource.clearUser()
-            _username.emit("")
+            while (true) {
+                delay(3000) // Change slide every 3 seconds
+                _currentPage.value = (_currentPage.value + 1) % _sliderImages.value.size
+            }
         }
-    }
-
-    fun resetErrorState() {
-        viewModelScope.launch { _loginState.emit(HomeState.Idle) }
     }
 }

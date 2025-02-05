@@ -1,172 +1,116 @@
 package com.kh.sbilyhour.composestructure.presentation.ui.screen.home
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.kh.sbilyhour.composestructure.presentation.ui.components.BottomSheetComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.CheckBoxComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.components.RadioButtonComponent
-import com.kh.sbilyhour.composestructure.presentation.ui.widgets.dialogs.InformAlertDialog
+import com.kh.sbilyhour.composestructure.presentation.ui.navigation.AppScreen
+import com.kh.sbilyhour.composestructure.presentation.ui.widgets.slider.ImageSliderWidget
 
 @Composable
-fun HomeScreen(navController: NavController) {
-    val viewModel: HomeViewModel = hiltViewModel()
-    val username by viewModel.username.collectAsState()
-    var openAlertDialog by remember { mutableStateOf(false) }
-    var showSheet by remember { mutableStateOf(false) }
-    var isChecked by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(false) }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                backgroundColor = Color.White,
-                title = { Text(text = "Home Screen") },
-                actions = {
-                    IconButton(onClick = { navController.navigate("login") }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "More Options"
-                        )
-                    }
-                }
+fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
+    val sliderImages by viewModel.sliderImages.collectAsState()
+    val itemsList by viewModel.itemsList.collectAsState()
+    val currentPage by viewModel.currentPage.collectAsState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp)
+    ) {
+        // 🔄 Image Slider with ViewModel Data
+        ImageSliderWidget(images = sliderImages, currentPage = currentPage)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 📝 List of Items from ViewModel
+        Text(
+            text = "Popular Items",
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        ItemGrid(items = itemsList, navController)
+    }
+}
+
+@Composable
+fun ItemGrid(items: List<String>, navController: NavController) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3), // 3-column grid
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        items(items.size) { index ->
+            ItemCard(
+                items[index],
+                onClick = { navController.navigate(AppScreen.Detail.route) }
             )
         }
-    ) { paddingValues ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            ) {
-                Text(text = "Access Token:${username}", maxLines = 3)
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    CardItem("Production Listing", onClick = {})
-                    CardItem("Category Listing", onClick = {})
-                    CardItem("Create Production", onClick = {})
-                    CardItem("Create Category", onClick = {  })
-                }
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    CardItem("Login", onClick = { navController.navigate("login") })
-                    CardItem("Register", onClick = { navController.navigate("register") })
-                    CardItem("Logout", onClick = { openAlertDialog = true })
-                    CardItem("Button Sheet", onClick = { showSheet = true })
-                }
-
-            }
-
-            Row {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-
-                    CheckBoxComponent(
-                        text = "CheckBox",
-                        isChecked = isChecked,
-                        onCheckedChange = { isChecked = it }
-                    )
-                    RadioButtonComponent(
-                        selected = selectedOption,
-                        onSelect = { selectedOption = it },
-                        text = "Radio Button",
-                        selectedColor = MaterialTheme.colorScheme.secondary,
-                        unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-        }
-    }
-
-    // Alert Dialog
-    if (openAlertDialog) {
-        InformAlertDialog(
-            onDismissRequest = {
-                openAlertDialog = false
-                viewModel.resetErrorState()
-            },
-            onConfirmation = {
-                openAlertDialog = false
-                viewModel.logout()
-                viewModel.resetErrorState()
-            },
-            dialogTitle = "Logout Confirmation",
-            dialogText = "Are you sure you want to logout?",
-            icon = null,
-        )
-    }
-    if (showSheet) {
-        BottomSheetComponent(onDismiss = { showSheet = false }) {
-            Text("Dynamic Content Here!", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { showSheet = false }) {
-                Text("Dismiss")
-            }
-        }
     }
 }
-
 
 @Composable
-fun CardItem(text: String, onClick: () -> Unit) {
+fun ItemCard(title: String, onClick: () -> Unit) {
     Card(
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color.Gray),
-        backgroundColor = Color.White,
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(16.dp), // Material 3 rounded corners
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary), // Border around the card
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .height(90.dp)
-            .clickable { onClick() } // Adding click handler
+            .aspectRatio(1f) // Square shape
+            .clickable(onClick = onClick)
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(text = text, color = Color.Black)
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = "Item Icon",
+                modifier = Modifier.size(32.dp), // Bigger icon
+                tint = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun HomePreview() {
     HomeScreen(navController = rememberNavController())
