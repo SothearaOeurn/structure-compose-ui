@@ -106,8 +106,12 @@ fun ProfileScreen(
                 openAlertDialog = false
                 viewModel.logout()
                 viewModel.resetErrorState()
+                // Navigate to Login screen and clear the navigation stack
                 navController.navigate(AppScreen.Login.route) {
-                    popUpTo(AppScreen.Profile.route) { inclusive = true }
+                    // Clear all previous screens in the stack
+                    popUpTo(AppScreen.Login.route) { inclusive = true }
+                    // Ensure that the Login screen is the only screen on the stack
+                    launchSingleTop = true
                 }
             },
             dialogTitle = "Logout Confirmation",

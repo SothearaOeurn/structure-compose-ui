@@ -1,6 +1,7 @@
 package com.kh.sbilyhour.composestructure.di
 
 import android.content.Context
+import androidx.activity.result.ActivityResultCaller
 import com.google.gson.Gson
 import com.kh.sbilyhour.composestructure.data.mapper.LoginMapper
 import com.kh.sbilyhour.composestructure.data.api.AuthApi
@@ -10,6 +11,7 @@ import com.kh.sbilyhour.composestructure.domain.usecase.login.LoginUseCase
 import com.kh.sbilyhour.composestructure.domain.usecase.login.LoginValidation
 import com.kh.sbilyhour.composestructure.data.error.ApiErrorHandler
 import com.kh.sbilyhour.composestructure.core.utils.NetworkUtils
+import com.kh.sbilyhour.composestructure.core.utils.PermissionHandler
 import com.kh.sbilyhour.composestructure.data.datasource.local.datastore.UserPreferencesDataSource
 import com.kh.sbilyhour.composestructure.data.datasource.local.datastore.UserPreferencesDataSourceImpl
 import com.kh.sbilyhour.composestructure.data.datasource.remote.login.LoginRemoteDataSource
@@ -118,4 +120,11 @@ object AuthModule {
         userPreferences: UserPreferencesDataSource
     ): RegisterRepository =
         RegisterRepositoryImpl(mapper, apiErrorHandler, remoteDataSource, userPreferences)
+
+    @Provides
+    fun providePermissionHandler(
+        @ApplicationContext context: Context,
+    ): PermissionHandler {
+        return PermissionHandler(context)
+    }
 }
