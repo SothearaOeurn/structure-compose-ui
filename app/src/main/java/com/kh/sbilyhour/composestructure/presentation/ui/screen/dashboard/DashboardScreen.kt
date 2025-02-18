@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
+import com.kh.sbilyhour.composestructure.presentation.ui.navigation.AppScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.home.HomeScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.profile.ProfileScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.stock.StockScreen
@@ -38,7 +39,7 @@ fun DashboardScreen(navController: NavController,viewModel: DashboardViewModel =
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Navigate to Add Stock Screen */ },
+                onClick = { navController.navigate(AppScreen.Setting.route) },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Stock")

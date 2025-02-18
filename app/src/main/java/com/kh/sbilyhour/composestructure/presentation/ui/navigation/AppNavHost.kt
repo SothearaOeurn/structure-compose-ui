@@ -15,6 +15,7 @@ import com.kh.sbilyhour.composestructure.presentation.ui.screen.home.HomeScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.profile.ProfileScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.login.LoginScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.register.RegisterScreen
+import com.kh.sbilyhour.composestructure.presentation.ui.screen.setting.SettingScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -62,6 +63,9 @@ fun AppNavHost(
                 }
                 composable(AppScreen.Detail.route) {
                     DetailScreen(navController = navController)
+                }
+                composable(AppScreen.Setting.route) {
+                    SettingScreen(navController = navController)
                 }
             }
         }

@@ -7,4 +7,5 @@ sealed class AppScreen(val route: String) {
     data object Dashboard : AppScreen("dashboard")
     data object Profile : AppScreen("profile")
     data object Detail : AppScreen("detail")
+    data object Setting : AppScreen("setting")
 }
