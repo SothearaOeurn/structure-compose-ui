@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun NavigationBarWidget(
-    selectedTab: BottomNavItem,
-    onTabSelected: (BottomNavItem, String) -> Unit
+    selectedTab: BottomNavItemWidget,
+    onTabSelected: (BottomNavItemWidget, String) -> Unit
 ) {
     NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
-        BottomNavItem.entries.forEach { item ->
+        BottomNavItemWidget.entries.forEach { item ->
             NavigationBarItem(
                 selected = item == selectedTab,
                 onClick = { onTabSelected(item, item.title) }, // Pass item title
