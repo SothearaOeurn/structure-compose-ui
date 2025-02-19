@@ -66,9 +66,7 @@ fun DetailScreen(navController: NavController) {
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             // Product Description
             Text(
                 text = "This is a detailed description of the product. It provides all the necessary information, including features and benefits.",
@@ -77,7 +75,6 @@ fun DetailScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-
             // Buy Now Button
             Button(
                 onClick = { /* Handle Buy Action */ },

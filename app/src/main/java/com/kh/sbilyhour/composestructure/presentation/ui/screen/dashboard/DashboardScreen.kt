@@ -1,5 +1,6 @@
 package com.kh.sbilyhour.composestructure.presentation.ui.screen.dashboard
 
+import NavigationDrawerWidget
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -12,62 +13,91 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
+import com.kh.sbilyhour.composestructure.presentation.ui.navigation.AppScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.home.HomeScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.profile.ProfileScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.screen.stock.StockScreen
 import com.kh.sbilyhour.composestructure.presentation.ui.theme.ComposeStructureTheme
-import com.kh.sbilyhour.composestructure.presentation.ui.widgets.navigationbar.BottomNavItem
+import com.kh.sbilyhour.composestructure.presentation.ui.widgets.drawer.ModelDrawerSheetWidget
+import com.kh.sbilyhour.composestructure.presentation.ui.widgets.navigationbar.BottomNavItemWidget
 import com.kh.sbilyhour.composestructure.presentation.ui.widgets.navigationbar.NavigationBarWidget
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(navController: NavController,viewModel: DashboardViewModel = hiltViewModel()) {
-    var selectedTab by remember { mutableStateOf(BottomNavItem.Home) }
+fun DashboardScreen(navController: NavController, viewModel: DashboardViewModel = hiltViewModel()) {
+    var selectedTab by remember { mutableStateOf(BottomNavItemWidget.Home) }
     val title by viewModel.title.collectAsState()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(title, fontWeight = FontWeight.Bold) },
-                actions = {
-                    IconButton(onClick = { /* Refresh Data */ }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* Navigate to Add Stock Screen */ },
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Stock")
-            }
-        },
-        bottomBar = {
-            NavigationBarWidget(selectedTab) { newTab, newTitle ->
-                selectedTab = newTab
-                viewModel.setTopAppBarTitle(newTitle)
-            }
+    NavigationDrawerWidget(
+        drawerState = drawerState,
+        drawerContent = {
+            ModelDrawerSheetWidget(drawerState = drawerState)
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            AnimatedVisibility(visible = selectedTab == BottomNavItem.Home) {
-                HomeScreen(navController = navController)
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = { Text(title, fontWeight = FontWeight.Bold) },
+                    actions = {
+                        IconButton(onClick = { /* Refresh Data */ }) {
+                            Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            // Toggle drawer state (open/close)
+                            scope.launch {
+                                if (drawerState.isClosed) {
+                                    drawerState.open()
+                                } else {
+                                    drawerState.close()
+                                }
+                            }
+                        }) {
+                            Icon(Icons.Default.Menu, contentDescription = "Menu")
+                        }
+                    },
+                )
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { navController.navigate(AppScreen.Setting.route) },
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Stock")
+                }
+            },
+            bottomBar = {
+                NavigationBarWidget(selectedTab) { newTab, newTitle ->
+                    selectedTab = newTab
+                    viewModel.setTopAppBarTitle(newTitle)
+                }
             }
-            AnimatedVisibility(visible = selectedTab == BottomNavItem.Stocks) {
-                StockScreen()
-            }
-            AnimatedVisibility(visible = selectedTab == BottomNavItem.Profile) {
-                ProfileScreen(navController = navController)
+        ) { paddingValues ->
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                AnimatedVisibility(visible = selectedTab == BottomNavItemWidget.Home) {
+                    HomeScreen(navController = navController)
+                }
+                AnimatedVisibility(visible = selectedTab == BottomNavItemWidget.Stocks) {
+                    StockScreen()
+                }
+                AnimatedVisibility(visible = selectedTab == BottomNavItemWidget.Profile) {
+                    ProfileScreen(navController = navController)
+                }
             }
         }
     }
 }
+
+
 
 
 @Preview(showBackground = true)

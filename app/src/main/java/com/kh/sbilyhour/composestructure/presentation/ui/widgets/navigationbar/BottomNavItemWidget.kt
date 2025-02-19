@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 
 // 🚀 Bottom Navigation Items
-enum class BottomNavItem(
+enum class BottomNavItemWidget(
     val title: String,
     val icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
