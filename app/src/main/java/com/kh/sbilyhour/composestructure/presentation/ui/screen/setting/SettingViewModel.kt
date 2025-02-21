@@ -2,6 +2,8 @@ package com.kh.sbilyhour.composestructure.presentation.ui.screen.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kh.sbilyhour.composestructure.presentation.ui.screen.setting.tab.TabSettingListing
+import com.kh.sbilyhour.composestructure.presentation.ui.widgets.tablayout.TabLayoutItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +17,8 @@ class SettingViewModel @Inject constructor() : ViewModel() {
 
     private val _state = MutableStateFlow<SettingState>(SettingState.Idle)
     val state: StateFlow<SettingState> = _state.asStateFlow()
+
+    val listing : List<TabLayoutItem> = TabSettingListing().listing()
 
     init {
         getListing()
